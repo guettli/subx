@@ -21,7 +21,7 @@ def repr_like_python3(something):
         return result[1:]
     return result
 
-def call(cmd, input=None, assert_zero_exit_status=False, warn_on_non_zero_exist_status=False, **kwargs):
+def call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_status=False, **kwargs):
     """
     :rtype: SubprocessResult
 
