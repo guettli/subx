@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
         logs = []
         with mock.patch('subx.logger.warn', lambda msg: logs.append(msg)):
             result = subx.call(
-                ['cat', '/file/which/does/not/exist'], warn_on_non_zero_exist_status=True,
+                ['cat', '/file/which/does/not/exist'], assert_zero_exit_status=False, warn_on_non_zero_exist_status=True,
                 env=dict(LANG='C'))
         self.assertEqual([u"subprocess failed <SubprocessResult cmd='cat /file/which/does/not/exist' ret=1 stdout='' stderr='cat: /file/which/does/not/exist: No such file or directory'>"],
             logs)
