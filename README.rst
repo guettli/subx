@@ -42,3 +42,44 @@ Not suited for ...
 ==================
 
 This library is not usefull if you want to stream data to or from your subprocess.
+
+Install
+=======
+
+Install for usage from `pypi <https://pypi.python.org/pypi/subx/>`_::
+
+    pip install subx
+
+
+Development Install on Python2
+==============================
+
+Install subx for development on Python2::
+
+    virtualenv subx-env
+    cd subx-env
+    . ./bin/activate
+    pip install -e git+https://github.com/guettli/subx.git#egg=subx
+
+Development Install on Python3
+==============================
+
+Install subx for development on Python3::
+
+    python3 -m venv subx-py3env
+    cd subx-py3env
+    . ./bin/activate
+    pip install --upgrade pip
+    pip install -e git+https://github.com/guettli/subx.git#egg=subx
+
+Development Testing
+===================
+
+Testing::
+
+    pip install -r src/subx/requirements.txt
+    cd src/subx
+    pytest # all test ok?
+    pyCharm src/subx/...
+    pytest # all test still ok?
+    .... I am waiting for your pull request :-)
