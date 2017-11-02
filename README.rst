@@ -14,6 +14,15 @@ This library gives you a data structure called `SubprocessResult`. It combines s
 
 This is handy if you do "one shut" calling of processes.
 
+Why?
+====
+
+If subx fails, you get a meaningful exception message that helps you. You see the first bytes of stdout and stderr. This is the main reason
+why I wrote this library.
+
+Just replace `subprocess.check_call(cmd)` with `subx.call(cmd)` and you get all you want plus a helpful exception messages.
+
+Or replace `subprocess.check_output(cmd)` with `subx.call(cmd).stdout`.
 
 Examples
 ========
