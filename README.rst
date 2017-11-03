@@ -20,9 +20,11 @@ Why?
 If subx fails, you get a meaningful exception message that helps you. You see the first bytes of stdout and stderr. This is the main reason
 why I wrote this library.
 
-Just replace `subprocess.check_call(cmd)` with `subx.call(cmd)` and you get all you want plus a helpful exception messages.
+Gracefull handling of timeouts. You get a meaningful error message, even if a timeout happens: You see all stdin and stdout which was emitted
+until the timeout occured.
 
-Or replace `subprocess.check_output(cmd)` with `subx.call(cmd).stdout`.
+Passing in a string as stdin of a subprocess is easy. Just use the kwarg `input`.
+
 
 Examples
 ========
@@ -30,6 +32,10 @@ Examples
 The method `call()` returns an instance of `SubprocessResult`.
 
 result = subx.call(['date'])
+
+Just replace `subprocess.check_call(cmd)` with `subx.call(cmd)` and you get all you want plus a helpful exception messages.
+
+Or replace `subprocess.check_output(cmd)` with `subx.call(cmd).stdout`.
 
 Class SubprocessResult
 ======================
