@@ -5,8 +5,10 @@ import logging
 
 try:
     import subprocess32 as subprocess
+    TimeoutExpired = subprocess.TimeoutExpired
 except ImportError:
     import subprocess
+    TimeoutExpired = IOError
 
 try:
     from subprocess32 import CalledProcessError
@@ -99,9 +101,12 @@ def handle_subprocess_pipe_with_timeout(pipe, timeout, input=None):
         raise Exception('pipe.stdin must be a stream if you pass in input')
     stdout = ''
     stderr = ''
+    kwargs=dict(input=input)
+    if timeout:
+        kwargs['timeout']=timeout
     try:
-        stdout, stderr = pipe.communicate(timeout=timeout, input=input)
-    except subprocess.TimeoutExpired:
+        stdout, stderr = pipe.communicate(**kwargs)
+    except TimeoutExpired:
         pipe.kill()
         try:
             # Other solution to handle timeout for shell=True: http://stackoverflow.com/a/4791612/633961
