@@ -74,8 +74,8 @@ class SubprocessResult(object):
 
     @classmethod
     def call(cls, cmd, input=None, **kwargs):
-        kwargs.setdefault('bufsize', -1)
-        timeout = kwargs.pop('timeout', None)
+        kwargs.setdefault(b'bufsize', -1)
+        timeout = kwargs.pop(b'timeout', None)
         stdin=None
         if input:
             stdin=subprocess.PIPE
