@@ -92,9 +92,7 @@ class Test(unittest.TestCase):
                          repr(subx.SubprocessResult([b'ä'], 1, stdout=b'ö', stderr=b'ü')))
 
     def test_sudo_password_prompt_does_not_wait_for_ever(self):
-        result = subx.call(['sudo', 'cat', '/etc/fstab'], assert_zero_exit_status=False, timeout=10,
+        result = subx.call(['cat', '/dev/tty'], assert_zero_exit_status=False, timeout=10,
                            env=dict(LANG='C'))
         self.assertEqual(1, result.ret)
-        if 'Permission denied' in result.stderr:
-            raise unittest.SkipTest('Looks like we are running in travis CI')
-        self.assertIn('no tty present', result.stderr)
+        self.assertIn('No such device or address', result.stderr)
