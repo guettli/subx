@@ -95,4 +95,6 @@ class Test(unittest.TestCase):
         result = subx.call(['sudo', 'cat', '/etc/fstab'], assert_zero_exit_status=False, timeout=10,
                            env=dict(LANG='C'))
         self.assertEqual(1, result.ret)
+        if 'Permission denied' in result.stderr:
+            raise unittest.SkipTest('Looks like we are running in travis CI')
         self.assertIn('no tty present', result.stderr)
