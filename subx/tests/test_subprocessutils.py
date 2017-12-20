@@ -90,3 +90,9 @@ class Test(unittest.TestCase):
     def test_repr_of_subprocess_result_is_7bit_ascii__bytestring(self):
         self.assertEqual("<SubprocessResult cmd='\\xc3\\xa4' ret=1 stdout='\\xc3\\xb6' stderr='\\xc3\\xbc'>",
                          repr(subx.SubprocessResult([b'ä'], 1, stdout=b'ö', stderr=b'ü')))
+
+    def test_sudo_password_prompt_does_not_wait_for_ever(self):
+        result = subx.call(['sudo', 'cat', '/etc/fstab'], assert_zero_exit_status=False, timeout=10,
+                           env=dict(LANG='C'))
+        self.assertEqual(1, result.ret)
+        self.assertIn('no tty present', result.stderr)

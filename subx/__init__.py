@@ -74,6 +74,7 @@ class SubprocessResult(object):
 
     @classmethod
     def call(cls, cmd, input=None, **kwargs):
+        start_new_session = kwargs.get('start_new_session', True) # change default. We want sudo to fail, not to read a password from /dev/tty
         kwargs.setdefault(b'bufsize', -1)
         timeout = kwargs.pop(b'timeout', None)
         stdin=None
@@ -81,7 +82,7 @@ class SubprocessResult(object):
             stdin=subprocess.PIPE
         else:
             stdin=open(os.devnull, 'rb')
-        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin, **kwargs)
+        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin, start_new_session=start_new_session, **kwargs)
         stdout, stderr = handle_subprocess_pipe_with_timeout(pipe, timeout=timeout, input=input)
         return cls(cmd, pipe.wait(), stdout, stderr)
 
