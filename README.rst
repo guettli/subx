@@ -56,7 +56,8 @@ If available the subprocess32 library gets used. This provides the timeout param
 Not suited for ...
 ==================
 
-This library is not usefull if you want to read streamed data from your subprocess.
+This library is not usefull if you want to read streamed data **from** your subprocess. But the library is usefull, if
+you want to stream data **to** your subprocess.
 
 Install
 =======
