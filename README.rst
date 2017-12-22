@@ -12,7 +12,7 @@ SubprocessResult
 
 This library gives you a data structure called `SubprocessResult`. It combines stdout, stderr and ret (the exit status).
 
-This is handy if you do "one shut" calling of processes.
+This is handy if you do "one shot" calling of processes.
 
 Why?
 ====
