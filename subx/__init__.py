@@ -82,7 +82,9 @@ class SubprocessResult(object):
             stdin=subprocess.PIPE
         else:
             stdin=open(os.devnull, 'rb')
-        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=stdin, start_new_session=start_new_session, **kwargs)
+        if 'stderr' not in kwargs:
+            kwargs['stderr']=subprocess.PIPE
+        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=stdin, start_new_session=start_new_session, **kwargs)
         stdout, stderr = handle_subprocess_pipe_with_timeout(pipe, timeout=timeout, input=input)
         return cls(cmd, pipe.wait(), stdout, stderr)
 

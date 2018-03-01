@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, unicode_literals, print_functi
 
 import unittest
 import mock
+import subprocess
 import subx
 
 
@@ -96,3 +97,9 @@ class Test(unittest.TestCase):
                            env=dict(LANG='C'))
         self.assertEqual(1, result.ret)
         self.assertIn('No such device or address', result.stderr)
+
+    def test_redirect_stderr_to_stdout(self):
+        result = subx.call(['cat', '/does/not/exist', '/etc/fstab'],
+                           stderr=subprocess.STDOUT, assert_zero_exit_status=False, env=dict(LANG='C'))
+        self.assertFalse(result.stderr)
+        self.assertIn('cat: /does/not/exist: No such file or directory', result.stdout)
