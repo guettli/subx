@@ -37,6 +37,17 @@ Just replace `subprocess.check_call(cmd)` with `subx.call(cmd)` and you get all 
 
 Or replace `subprocess.check_output(cmd)` with `subx.call(cmd).stdout`.
 
+Method subx.call()
+==================
+
+Arguments::
+
+    call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_status=False, **kwargs)
+
+    input: String which gets send to stdin of the subprocess.
+    assert_zero_exit_status: raise an exception if exist status is non-zero?
+    warn_on_non_zero_exist_status: warn on non zero exit status?
+
 Class SubprocessResult
 ======================
 
@@ -44,7 +55,7 @@ The class `SubprocessResult` has the following attributes:
 
  * stdout
  * stderr
- * ret
+ * ret (exit status)
  * cmd
 
 Additional Features
