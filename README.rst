@@ -48,6 +48,8 @@ Arguments::
     assert_zero_exit_status: raise an exception if exist status is non-zero?
     warn_on_non_zero_exist_status: warn on non zero exit status?
 
+    Returns: SubprocessResult instance
+
 Class SubprocessResult
 ======================
 
