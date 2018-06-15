@@ -75,7 +75,7 @@ you want to stream data **to** your subprocess.
 Install
 =======
 
-Install for usage from `pypi <https://pypi.python.org/pypi/subx/>`_::
+Install from `pypi <https://pypi.python.org/pypi/subx/>`_::
 
     pip install subx
 
