@@ -53,7 +53,7 @@ class Test(unittest.TestCase):
             self.assertEqual(1, exc.returncode)
             self.assertEqual(
                 "Command '['cat', '/file/which/does/not/exist']' returned non-zero exit status 1: stdout='' stderr='cat: /file/which/does/not/exist: No such file or directory\\n'",
-                str(exc).replace("u\x27", "'"))
+                str(exc).replace("u\x27", "'").replace('status 1.:', 'status 1:'))
         else:
             raise AssertionError()
 
