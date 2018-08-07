@@ -103,3 +103,7 @@ class Test(unittest.TestCase):
                            stderr=subprocess.STDOUT, assert_zero_exit_status=False, env=dict(LANG='C'))
         self.assertFalse(result.stderr)
         self.assertIn('cat: /does/not/exist: No such file or directory', result.stdout)
+    
+    def test_subx_called_with_incorrect__list_was_ommitted(self):
+        self.assertRaises(ValueError, subx.call, 'python', 'setup.py')
+
