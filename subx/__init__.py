@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, unicode_literals, print_function
-import os
+
 import logging
+import os
 
 try:
     import subprocess32 as subprocess
+
     TimeoutExpired = subprocess.TimeoutExpired
+    is_subprocess32 = True
 except ImportError:
     import subprocess
+
     TimeoutExpired = IOError
+    is_subprocess32 = False
 
 try:
     from subprocess32 import CalledProcessError
@@ -17,11 +22,13 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
 def repr_like_python3(something):
     result = repr(something)
     if result.startswith("u'") or result.startswith('u"'):
         return result[1:]
     return result
+
 
 def call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_status=False, **kwargs):
     """
@@ -34,13 +41,14 @@ def call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_s
     if isinstance(cmd, basestring):
         raise ValueError('cmd should be list or tuple, not a string: %r' % cmd)
     result = SubprocessResult.call(cmd, input=input, **kwargs)
-    if assert_zero_exit_status and result.ret!=0:
+    if assert_zero_exit_status and result.ret != 0:
         raise SubprocessError(result)
 
-    if warn_on_non_zero_exist_status and result.ret!=0:
+    if warn_on_non_zero_exist_status and result.ret != 0:
         logger.warn('subprocess failed %r' % result)
 
     return result
+
 
 class SubprocessResult(object):
     def __init__(self, cmd, ret, stdout='', stderr=''):
@@ -49,52 +57,55 @@ class SubprocessResult(object):
         self.stdout = stdout
         self.stderr = stderr
 
-    max_head_size=4000
+    max_head_size = 4000
 
     def __repr__(self):
-        return b'<{} cmd={} ret={} stdout={} stderr={}>'.format(self.__class__.__name__, repr_like_python3(self.cmd_for_copy_and_paste),
-                                                                self.ret, repr_like_python3(self.head_of_string(self.stdout)),
+        return b'<{} cmd={} ret={} stdout={} stderr={}>'.format(self.__class__.__name__,
+                                                                repr_like_python3(self.cmd_for_copy_and_paste),
+                                                                self.ret,
+                                                                repr_like_python3(self.head_of_string(self.stdout)),
                                                                 repr_like_python3(self.head_of_string(self.stderr)))
 
     @property
     def cmd_for_copy_and_paste(self):
-        ret=[]
+        ret = []
         for item in self.cmd:
             if b' ' in item:
-                item='"{}"'.format(item)
+                item = '"{}"'.format(item)
             ret.append(item)
         return b' '.join(ret)
 
     @classmethod
     def head_of_string(cls, stdout, max_head_size=None):
         if not max_head_size:
-            max_head_size=cls.max_head_size
-        stdout=stdout.strip()
-        if len(stdout)<max_head_size:
+            max_head_size = cls.max_head_size
+        stdout = stdout.strip()
+        if len(stdout) < max_head_size:
             return stdout
         return '%s ... [cut]' % stdout[:max_head_size]
 
     @classmethod
     def call(cls, cmd, input=None, **kwargs):
-        start_new_session = kwargs.get('start_new_session', True) # change default. We want sudo to fail, not to read a password from /dev/tty
+        if is_subprocess32:
+            kwargs['start_new_session'] = kwargs.get('start_new_session',
+                                                     True)  # change default. We want sudo to fail, not to read a password from /dev/tty
         kwargs.setdefault(b'bufsize', -1)
         timeout = kwargs.pop(b'timeout', None)
-        stdin=None
         if input:
-            stdin=subprocess.PIPE
+            stdin = subprocess.PIPE
         else:
-            stdin=open(os.devnull, 'rb')
+            stdin = open(os.devnull, 'rb')
         if 'stderr' not in kwargs:
-            kwargs['stderr']=subprocess.PIPE
-        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=stdin, start_new_session=start_new_session, **kwargs)
+            kwargs['stderr'] = subprocess.PIPE
+        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=stdin, **kwargs)
         stdout, stderr = handle_subprocess_pipe_with_timeout(pipe, timeout=timeout, input=input)
         return cls(cmd, pipe.wait(), stdout, stderr)
 
 
-
 class SubprocessError(CalledProcessError):
     def __init__(self, subprocess_result):
-        super(SubprocessError, self).__init__(subprocess_result.ret, subprocess_result.cmd, SubprocessResult.head_of_string(subprocess_result.stdout))
+        super(SubprocessError, self).__init__(subprocess_result.ret, subprocess_result.cmd,
+                                              SubprocessResult.head_of_string(subprocess_result.stdout))
         self.stderr = subprocess_result.stderr
 
     def __str__(self):
@@ -106,9 +117,9 @@ def handle_subprocess_pipe_with_timeout(pipe, timeout, input=None):
         raise Exception('pipe.stdin must be a stream if you pass in input')
     stdout = ''
     stderr = ''
-    kwargs=dict(input=input)
+    kwargs = dict(input=input)
     if timeout:
-        kwargs['timeout']=timeout
+        kwargs['timeout'] = timeout
     try:
         stdout, stderr = pipe.communicate(**kwargs)
     except TimeoutExpired:
