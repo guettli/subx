@@ -37,6 +37,14 @@ Just replace `subprocess.check_call(cmd)` with `subx.call(cmd)` and you get all 
 
 Or replace `subprocess.check_output(cmd)` with `subx.call(cmd).stdout`.
 
+If you want to ignore the status code like shell scripts do, and you want to see the head of stdout/stderr you can use this:
+
+`logging.info(subx.call(assert_zero_exit_status=False))`
+
+This will use repr(result). Which looks like roughly this:
+
+`<SubprocessResult cmd='my-command' ret=0 stdout='....' stderr='...'>`
+
 Method subx.call()
 ==================
 
