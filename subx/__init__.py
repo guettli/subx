@@ -38,7 +38,7 @@ def call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_s
 
     Returns non-zero result in result.ret if subprocess terminated with non-zero exist status.
     """
-    if isinstance(cmd, basestring):
+    if (not kwargs.get('shell')) and isinstance(cmd, basestring):
         raise ValueError('cmd should be list or tuple, not a string: %r' % cmd)
     result = SubprocessResult.call(cmd, input=input, **kwargs)
     if assert_zero_exit_status and result.ret != 0:

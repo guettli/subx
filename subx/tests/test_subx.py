@@ -107,3 +107,6 @@ class Test(unittest.TestCase):
     def test_subx_called_with_incorrect__list_was_ommitted(self):
         self.assertRaises(ValueError, subx.call, 'python', 'setup.py')
 
+    def test_subx_with_shell_is_true(self):
+        result = subx.call(['cat'], input='foo', shell=True)
+        self.assertEqual("<SubprocessResult cmd='cat' ret=0 stdout='foo' stderr=''>", repr(result))
