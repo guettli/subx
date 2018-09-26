@@ -88,6 +88,25 @@ Install from `pypi <https://pypi.python.org/pypi/subx/>`_::
     pip install subx
 
 
+
+subprocess.check_output() vs subx.call()
+========================================
+
+Look, compare, think and decide what message helps your more.
+
+subprocess.check_output()::
+
+    CalledProcessError: Command '['cat', 'some-file']' returned non-zero exit status 1
+
+sub.call()::
+
+    SubprocessError: Command '['cat', 'some-file']' returned non-zero exit status 1:
+    stdout='' stderr='cat: some-file: No such file or directory'
+
+
+... especially if the code fails in a production environment where reproducing the error is not easy,
+subx can call help you to spot the source of the failure.
+
 Development Install on Python2
 ==============================
 
