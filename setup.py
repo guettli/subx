@@ -52,5 +52,6 @@ setup(
     packages=setuptools.find_packages(),
 
     install_requires=[
+        'subprocess32;python_version<"3.5"',
     ]
 )
