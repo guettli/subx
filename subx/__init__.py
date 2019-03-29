@@ -20,6 +20,12 @@ try:
 except ImportError:
     from subprocess import CalledProcessError
 
+try:
+  basestring
+except NameError:
+  basestring = str
+
+
 logger = logging.getLogger(__name__)
 
 
