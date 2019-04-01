@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, unicode_literals, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 import os
+
+import six
 
 try:
     import subprocess32 as subprocess
@@ -21,19 +23,16 @@ except ImportError:
     from subprocess import CalledProcessError
 
 try:
-  basestring
+    basestring
 except NameError:
-  basestring = str
+    basestring = str
 
+try:
+    unicode
+except NameError:
+    unicode = str
 
 logger = logging.getLogger(__name__)
-
-
-def repr_like_python3(something):
-    result = repr(something)
-    if result.startswith("u'") or result.startswith('u"'):
-        return result[1:]
-    return result
 
 
 def call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_status=False, **kwargs):
@@ -57,46 +56,57 @@ def call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_s
 
 
 class SubprocessResult(object):
-    def __init__(self, cmd, ret, stdout='', stderr=''):
+    def __init__(self, cmd, ret, stdout=b'', stderr=b''):
         self.cmd = cmd
         self.ret = ret
+        if isinstance(stdout, unicode):
+            stdout = stdout.encode('ascii')
+        if isinstance(stderr, unicode):
+            stderr = stderr.encode('ascii')
+
         self.stdout = stdout
         self.stderr = stderr
 
     max_head_size = 4000
 
     def __repr__(self):
-        return b'<{} cmd={} ret={} stdout={} stderr={}>'.format(self.__class__.__name__,
-                                                                repr_like_python3(self.cmd_for_copy_and_paste),
+        byte_prefix = ''
+        if six.PY2:
+            byte_prefix='b'
+
+        return b'<{} cmd={}{} ret={} stdout={}{} stderr={}{}>'.format(self.__class__.__name__,
+                                                                byte_prefix, self.cmd_for_copy_and_paste,
                                                                 self.ret,
-                                                                repr_like_python3(self.head_of_string(self.stdout)),
-                                                                repr_like_python3(self.head_of_string(self.stderr)))
+                                                                byte_prefix, repr(self.head_of_string(self.stdout)),
+                                                                byte_prefix, repr(self.head_of_string(self.stderr)))
 
     @property
     def cmd_for_copy_and_paste(self):
         ret = []
         for item in self.cmd:
             if b' ' in item:
-                item = '"{}"'.format(item)
+                item = b'"{}"'.format(item)
             ret.append(item)
-        return b' '.join(ret)
+        ret = b' '.join(ret)
+        return b"'{}'".format(ret)
 
     @classmethod
     def head_of_string(cls, stdout, max_head_size=None):
+        assert isinstance(stdout, bytes)
         if not max_head_size:
             max_head_size = cls.max_head_size
         stdout = stdout.strip()
         if len(stdout) < max_head_size:
             return stdout
-        return '%s ... [cut]' % stdout[:max_head_size]
+        return b'%s ... [cut]' % stdout[:max_head_size]
 
     @classmethod
     def call(cls, cmd, input=None, **kwargs):
         if is_subprocess32:
             kwargs['start_new_session'] = kwargs.get('start_new_session',
                                                      True)  # change default. We want sudo to fail, not to read a password from /dev/tty
-        kwargs.setdefault(b'bufsize', -1)
-        timeout = kwargs.pop(b'timeout', None)
+        kwargs.setdefault('bufsize', -1)
+        timeout = kwargs.pop('timeout', None)
         if input:
             stdin = subprocess.PIPE
         else:
@@ -112,14 +122,17 @@ class SubprocessError(CalledProcessError):
     def __init__(self, subprocess_result):
         super(SubprocessError, self).__init__(subprocess_result.ret, subprocess_result.cmd,
                                               SubprocessResult.head_of_string(subprocess_result.stdout))
-        self.stderr = subprocess_result.stderr
+        self.stderr = SubprocessResult.head_of_string(subprocess_result.stderr)
 
     def __str__(self):
-        return b'%s: stdout=%r stderr=%r' % (super(SubprocessError, self).__str__(), self.output, self.stderr)
+        byte_prefix = ''
+        if six.PY2:
+            byte_prefix='b'
+        return '{}: stdout={}{} stderr={}{}'.format(super(SubprocessError, self).__str__(), byte_prefix, repr(self.output), byte_prefix, repr(self.stderr))
 
 
 def handle_subprocess_pipe_with_timeout(pipe, timeout, input=None):
-    if (not input is None) and not pipe.stdin:
+    if (input is not None) and not pipe.stdin:
         raise Exception('pipe.stdin must be a stream if you pass in input')
     stdout = ''
     stderr = ''
@@ -137,4 +150,4 @@ def handle_subprocess_pipe_with_timeout(pipe, timeout, input=None):
         except subprocess.TimeoutExpired:
             pass
         raise subprocess.TimeoutExpired(pipe.args, timeout, 'stdout: %r stderr: %r' % (stdout, stderr))
-    return (stdout, stderr)
+    return stdout, stderr
