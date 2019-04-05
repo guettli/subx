@@ -73,28 +73,24 @@ class Test(unittest.TestCase):
                 ['cat', '/file/which/does/not/exist'], assert_zero_exit_status=False, warn_on_non_zero_exist_status=True,
                 env=dict(LANG='C'))
         self.assertEqual([
-                "subprocess failed <SubprocessResult cmd=b'cat /file/which/does/not/exist' ret=1 stdout=b'' stderr=b'cat: /file/which/does/not/exist: No such file or directory'>"],
+                "subprocess failed <SubprocessResult cmd='cat /file/which/does/not/exist' ret=1 stdout=b'' stderr=b'cat: /file/which/does/not/exist: No such file or directory'>"],
             logs)
         self.assertEqual(1, result.ret)
 
     def test_subprocess_result__repr(self):
         result = subx.SubprocessResult(cmd=['dummy'], ret=1, stdout=b'my-stdout', stderr=b'my-stderr')
-        self.assertEqual("<SubprocessResult cmd=b'dummy' ret=1 stdout=b'my-stdout' stderr=b'my-stderr'>", repr(result))
+        self.assertEqual("<SubprocessResult cmd='dummy' ret=1 stdout=b'my-stdout' stderr=b'my-stderr'>", repr(result))
 
     def test_call_with_input(self):
         result = subx.call(['cat'], input=b'foo', timeout=1)
-        self.assertEqual("<SubprocessResult cmd=b'cat' ret=0 stdout=b'foo' stderr=b''>", repr(result))
-
-    def test_repr_of_subprocess_result_is_7bit_ascii__unicode(self):
-        result = repr(subx.SubprocessResult([b'\xc3\xa4'], 1, stdout=b'\xc3\xb6', stderr=b'\xc3\xbc'))
-        self.assertEqual(b"<SubprocessResult cmd=b'\xc3\xa4' ret=1 stdout=b'\\xc3\\xb6' stderr=b'\\xc3\\xbc'>", result)
+        self.assertEqual("<SubprocessResult cmd='cat' ret=0 stdout=b'foo' stderr=b''>", repr(result))
 
 
     def test_repr_of_subprocess_result_is_7bit_ascii__bytestring(self):
         stdout = 'ö'.encode('utf8')
         stderr = 'ü'.encode('utf8')
-        self.assertEqual(b"<SubprocessResult cmd='\xc3\xa4' ret=1 stdout='\\xc3\\xb6' stderr='\\xc3\\xbc'>",
-                         repr(subx.SubprocessResult([b'\xc3\xa4'], 1, stdout=stdout, stderr=stderr)).replace(b"b'", b"'"))
+        self.assertEqual("<SubprocessResult cmd='\\xe4' ret=1 stdout='\\xc3\\xb6' stderr='\\xc3\\xbc'>",
+                         repr(subx.SubprocessResult(['ä'], 1, stdout=stdout, stderr=stderr)).replace(b"b'", b"'"))
 
     def test_sudo_password_prompt_does_not_wait_for_ever(self):
         result = subx.call(['cat', '/dev/tty'], assert_zero_exit_status=False, timeout=10,
@@ -113,4 +109,4 @@ class Test(unittest.TestCase):
 
     def test_subx_with_shell_is_true(self):
         result = subx.call(['cat'], input=b'foo', shell=True)
-        self.assertEqual("<SubprocessResult cmd=b'cat' ret=0 stdout=b'foo' stderr=b''>", repr(result))
+        self.assertEqual("<SubprocessResult cmd='cat' ret=0 stdout=b'foo' stderr=b''>", repr(result))

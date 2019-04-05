@@ -73,22 +73,33 @@ class SubprocessResult(object):
         byte_prefix = ''
         if six.PY2:
             byte_prefix='b'
-
-        return b'<{} cmd={}{} ret={} stdout={}{} stderr={}{}>'.format(self.__class__.__name__,
-                                                                byte_prefix, self.cmd_for_copy_and_paste,
+            cmd = self.cmd_for_copy_and_paste
+        else:
+            cmd = self.cmd_for_copy_and_paste
+        stdout_rep = repr(self.head_of_string(self.stdout))
+        stderr_rep = repr(self.head_of_string(self.stderr))
+        return '<{} cmd={} ret={} stdout={}{} stderr={}{}>'.format(self.__class__.__name__,
+                                                                cmd,
                                                                 self.ret,
-                                                                byte_prefix, repr(self.head_of_string(self.stdout)),
-                                                                byte_prefix, repr(self.head_of_string(self.stderr)))
+                                                                byte_prefix, stdout_rep,
+                                                                byte_prefix, stderr_rep)
 
     @property
     def cmd_for_copy_and_paste(self):
         ret = []
+        if six.PY2:
+            for item in self.cmd:
+                if ' ' in item:
+                    item = '"{}"'.format(item)
+                ret.append(item)
+            ret = ' '.join(ret)
+            return "'{}'".format(ret)
         for item in self.cmd:
-            if b' ' in item:
-                item = b'"{}"'.format(item)
+            if ' ' in item:
+                item = '{}'.format(item)
             ret.append(item)
-        ret = b' '.join(ret)
-        return b"'{}'".format(ret)
+        ret = ' '.join(ret)
+        return "'{}'".format(ret)
 
     @classmethod
     def head_of_string(cls, stdout, max_head_size=None):
