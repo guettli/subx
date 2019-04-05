@@ -75,7 +75,7 @@ class SubprocessResult(object):
             byte_prefix='b'
             cmd = self.cmd_for_copy_and_paste.encode('ascii', 'backslashreplace')
         else:
-            cmd = self.cmd_for_copy_and_paste
+            cmd = self.cmd_for_copy_and_paste.encode('ascii', 'backslashreplace').decode('ascii')
         stdout_rep = repr(self.head_of_string(self.stdout))
         stderr_rep = repr(self.head_of_string(self.stderr))
         return '<{} cmd={} ret={} stdout={}{} stderr={}{}>'.format(self.__class__.__name__,

@@ -90,7 +90,7 @@ class Test(unittest.TestCase):
         stdout = 'ö'.encode('utf8')
         stderr = 'ü'.encode('utf8')
         self.assertEqual("<SubprocessResult cmd='\\xe4' ret=1 stdout='\\xc3\\xb6' stderr='\\xc3\\xbc'>",
-                         repr(subx.SubprocessResult(['ä'], 1, stdout=stdout, stderr=stderr)).replace(b"b'", b"'"))
+                         repr(subx.SubprocessResult(['ä'], 1, stdout=stdout, stderr=stderr)).replace("b'", "'"))
 
     def test_sudo_password_prompt_does_not_wait_for_ever(self):
         result = subx.call(['cat', '/dev/tty'], assert_zero_exit_status=False, timeout=10,
