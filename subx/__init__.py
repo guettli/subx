@@ -71,7 +71,7 @@ class SubprocessResult(object):
 
     def __repr__(self):
         byte_prefix = ''
-        if six.PY2:
+        if not six.PY3:
             byte_prefix='b'
             cmd = self.cmd_for_copy_and_paste.encode('ascii', 'backslashreplace')
         else:
@@ -87,7 +87,7 @@ class SubprocessResult(object):
     @property
     def cmd_for_copy_and_paste(self):
         ret = []
-        if six.PY2:
+        if not six.PY3:
             for item in self.cmd:
                 if ' ' in item:
                     item = '"{}"'.format(item)
@@ -137,7 +137,7 @@ class SubprocessError(CalledProcessError):
 
     def __str__(self):
         byte_prefix = ''
-        if six.PY2:
+        if not six.PY3:
             byte_prefix='b'
         return '{}: stdout={}{} stderr={}{}'.format(super(SubprocessError, self).__str__(), byte_prefix, repr(self.output), byte_prefix, repr(self.stderr))
 
