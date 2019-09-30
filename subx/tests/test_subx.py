@@ -110,3 +110,6 @@ class Test(unittest.TestCase):
     def test_subx_with_shell_is_true(self):
         result = subx.call(['cat'], input=b'foo', shell=True)
         self.assertEqual("<SubprocessResult cmd='cat' ret=0 stdout=b'foo' stderr=b''>", repr(result))
+
+    def test_subx_failure_without_stderr(self):
+        self.assertRaises(subx.SubprocessError, subx.call, ['false'], stderr=subprocess.STDOUT)

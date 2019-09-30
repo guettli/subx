@@ -103,6 +103,8 @@ class SubprocessResult(object):
 
     @classmethod
     def head_of_string(cls, stdout, max_head_size=None):
+        if stdout is None:
+            return b'None'
         assert isinstance(stdout, bytes)
         if not max_head_size:
             max_head_size = cls.max_head_size
