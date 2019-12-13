@@ -45,6 +45,16 @@ This will use repr(result). Which looks like roughly this:
 
 `<SubprocessResult cmd='my-command' ret=0 stdout='....' stderr='...'>`
 
+By default subx.call() raises `subx.SubprocessError` if the exit status is non-zero.
+
+If you want to handle non-zero exist status yourself, then you can do it like this::
+
+
+    result = subx.call(cmd, assert_zero_exit_status=False)
+    if result.ret:
+        print('Failed: {}\n{}\n{}'.format(cmd, result.stderr, result.stdout))
+        ...
+
 Method subx.call()
 ==================
 
