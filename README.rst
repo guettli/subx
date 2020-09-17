@@ -78,12 +78,6 @@ The class `SubprocessResult` has the following attributes:
  * ret (exit status)
  * cmd
 
-Additional Features
-===================
-
-If available the subprocess32 library gets used. This provides the timeout parameter for Python 2.7.
-
-
 Not suited for ...
 ==================
 
@@ -117,16 +111,6 @@ sub.call()::
 ... especially if the code fails in a production environment where reproducing the error is not easy,
 subx can call help you to spot the source of the failure.
 
-Development Install on Python2
-==============================
-
-Install subx for development on Python2::
-
-    virtualenv subx-env
-    cd subx-env
-    . ./bin/activate
-    pip install -e git+https://github.com/guettli/subx.git#egg=subx
-
 Development Install on Python3
 ==============================
 
@@ -149,3 +133,10 @@ Testing::
     pyCharm src/subx/...
     pytest # all test still ok?
     .... I am waiting for your pull request :-)
+
+
+Python 2
+========
+
+Python 2 is not supported any more. Please use version `2019.36.0` if you need it.
+

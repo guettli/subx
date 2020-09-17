@@ -1,5 +1,4 @@
-pytest>=3.0.6
+pytest
 bumpversion
 mock
-subprocess32
 readme_renderer

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import subprocess
 import unittest
 
 import mock
-import six
 import subx
 
 
@@ -54,8 +52,8 @@ class Test(unittest.TestCase):
             self.assertEqual(['cat', '/file/which/does/not/exist'], exc.cmd)
             self.assertEqual(1, exc.returncode)
             self.assertEqual(
-                "Command '['cat', '/file/which/does/not/exist']' returned non-zero exit status 1: stdout=b'' stderr=b'cat: /file/which/does/not/exist: No such file or directory'",
-                str(exc).replace("u'", "'").replace('status 1.:', 'status 1:'))
+                "Command '['cat', '/file/which/does/not/exist']' returned non-zero exit status 1.: stdout=b'' stderr=b'cat: /file/which/does/not/exist: No such file or directory'",
+                str(exc))
         else:
             raise AssertionError()
 
@@ -68,7 +66,7 @@ class Test(unittest.TestCase):
 
     def test_warn_on_non_zero_exist_status__non_zero(self):
         logs = []
-        with mock.patch('subx.logger.warn', lambda msg: logs.append(msg)):
+        with mock.patch('subx.logger.warning', lambda msg: logs.append(msg)):
             result = subx.call(
                 ['cat', '/file/which/does/not/exist'], assert_zero_exit_status=False, warn_on_non_zero_exist_status=True,
                 env=dict(LANG='C'))
@@ -81,8 +79,8 @@ class Test(unittest.TestCase):
         result = subx.SubprocessResult(cmd=['dummy'], ret=1, stdout=b'my-stdout', stderr=b'my-stderr')
         self.assertEqual("<SubprocessResult cmd='dummy' ret=1 stdout=b'my-stdout' stderr=b'my-stderr'>", repr(result))
 
-    def test_call_with_input(self):
-        result = subx.call(['cat'], input=b'foo', timeout=1)
+    def test_call_with_data(self):
+        result = subx.call(['cat'], data=b'foo', timeout=1)
         self.assertEqual("<SubprocessResult cmd='cat' ret=0 stdout=b'foo' stderr=b''>", repr(result))
 
 
@@ -108,7 +106,7 @@ class Test(unittest.TestCase):
         self.assertRaises(ValueError, subx.call, 'python', 'setup.py')
 
     def test_subx_with_shell_is_true(self):
-        result = subx.call(['cat'], input=b'foo', shell=True)
+        result = subx.call(['cat'], data=b'foo', shell=True)
         self.assertEqual("<SubprocessResult cmd='cat' ret=0 stdout=b'foo' stderr=b''>", repr(result))
 
     def test_subx_failure_without_stderr(self):
