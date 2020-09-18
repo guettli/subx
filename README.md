@@ -131,6 +131,11 @@ Testing:
 Python 2 is not supported any more. Please use version
 `2019.36.0` if you need it.
 
+## Reflections
+
+Creating subprocesses should be avoided. It is slow and error prone.
+In the past you could not avoid it. Today there is a library for almost everything,
+and that's great.
 
 ## More from Thomas Güttler
 
