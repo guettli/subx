@@ -1,12 +1,11 @@
 [![image](https://travis-ci.org/guettli/subx.svg?branch=master)](https://travis-ci.org/guettli/subx)
 
-# subx: Data structure SubprocessResult - for the Python programming language
+# subx: A Data Structure for Results of Subprocesses
 
 ## SubprocessResult
 
 This library gives you a data structure called
-`SubprocessResult`. It combines stdout, stderr and ret (the
-exit status).
+`SubprocessResult`. It combines stdout, stderr and ret.
 
 This is handy if you do "one shot" calling of subprocesses.
 
@@ -18,8 +17,8 @@ the standard library
 [subprocess](https://docs.python.org/3/library/subprocess.html).
 
 Gracefull handling of timeouts. You get a meaningful error message, even
-if a timeout happens: You see all stdin and stdout which was emitted
-until the timeout occured.
+if timeout happens: You see stdin and stdout which were emitted
+until the timeout occurred.
 
 Passing in a string as stdin of a subprocess is easy. Just use the kwarg `data`.
 
@@ -42,7 +41,7 @@ want to see the head of stdout/stderr you can use this:
 
 This will use repr(result). Which looks like roughly this:
 
-    `<SubprocessResult cmd='my-command' ret=0 stdout='....' stderr='...'>`
+    <SubprocessResult cmd='my-command' ret=0 stdout='....' stderr='...'>
 
 By default `subx.call()` raises `subx.SubprocessError` if the
 exit status is non-zero.
@@ -52,16 +51,16 @@ like this:
 
     result = subx.call(cmd, assert_zero_exit_status=False)
     if result.ret:
-        print('Failed: {}\n{}\n{}'.format(cmd, result.stderr, result.stdout))
+        print('Failed: {}\n{}\n{}'.format(result.cmd, result.stderr, result.stdout))
         ...
 
 ## Method subx.call()
 
 Arguments:
 
-    call(cmd, input=None, assert_zero_exit_status=True, warn_on_non_zero_exist_status=False, **kwargs)
+    call(cmd, data=None, assert_zero_exit_status=True, warn_on_non_zero_exist_status=False, **kwargs)
 
-    input: String which gets send to stdin of the subprocess.
+    data: String which gets send to stdin of the subprocess.
     assert_zero_exit_status: raise an exception if exist status is non-zero?
     warn_on_non_zero_exist_status: warn on non zero exit status?
 
@@ -103,7 +102,8 @@ sub.call():
 
 ... especially if the code fails in a production environment where
 reproducing the error is not easy, subx can call help you to spot the
-source of the failure.
+source of the failure. In above case you see "No such file or directory" which
+gives you a hint about the root cause. 
 
 ## Development Install on Python3
 
