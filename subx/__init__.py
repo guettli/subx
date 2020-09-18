@@ -91,6 +91,10 @@ class SubprocessResult(object):
             kwargs['stderr'] = subprocess.PIPE
         pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=stdin, **kwargs)
         stdout, stderr = handle_subprocess_pipe_with_timeout(pipe, timeout=timeout, data=data)
+        try:
+            stdin.close()
+        except AttributeError:
+            pass
         return cls(cmd, pipe.wait(), stdout, stderr)
 
 
