@@ -17,8 +17,8 @@ This is handy if you do "one shot" calling of processes.
 Why?
 ====
 
-If subx fails, you get a meaningful exception message that helps you. You see the first bytes of stdout and stderr. This is the main reason
-why I wrote this library.
+If subx fails, you get a meaningful exception message that helps you. You see the first bytes of stdout and stderr. This more convinient than
+the standard library [subprocess](https://docs.python.org/3/library/subprocess.html)
 
 Gracefull handling of timeouts. You get a meaningful error message, even if a timeout happens: You see all stdin and stdout which was emitted
 until the timeout occured.
