@@ -9,6 +9,10 @@ This library gives you a data structure called
 
 This is handy if you do "one shot" calling of subprocesses.
 
+Since Python 3.5 the subprocess module has the method [run()](https://docs.python.org/3.5/library/subprocess.html#subprocess.run)
+which returns a datastructure [CompletedProcess](https://docs.python.org/3.5/library/subprocess.html#subprocess.CompletedProcess). This means
+the `subx` library is not needed any more.
+
 ## Why?
 
 If subx fails, you get a meaningful exception message that helps you.
