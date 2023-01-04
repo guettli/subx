@@ -78,6 +78,13 @@ class SubprocessResult(object):
         return b'%s ... [cut]' % stdout[:max_head_size]
 
     @classmethod
+    def _cleanup(cls, stdin):
+        try:
+            stdin.close()
+        except AttributeError:
+            pass
+
+    @classmethod
     def call(cls, cmd, data=None, **kwargs):
         kwargs['start_new_session'] = kwargs.get('start_new_session',
                                                  True)  # change default. We want sudo to fail, not to read a password from /dev/tty
@@ -89,12 +96,14 @@ class SubprocessResult(object):
             stdin = open(os.devnull, 'rb')
         if 'stderr' not in kwargs:
             kwargs['stderr'] = subprocess.PIPE
-        pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=stdin, **kwargs)
-        stdout, stderr = handle_subprocess_pipe_with_timeout(pipe, timeout=timeout, data=data)
         try:
-            stdin.close()
-        except AttributeError:
-            pass
+            pipe = subprocess.Popen(cmd, stdout=subprocess.PIPE, stdin=stdin, **kwargs)
+        except OSError:
+            cls._cleanup(stdin=stdin)
+            raise
+
+        stdout, stderr = handle_subprocess_pipe_with_timeout(pipe, timeout=timeout, data=data)
+        cls._cleanup(stdin=stdin)
         return cls(cmd, pipe.wait(), stdout, stderr)
 
 
