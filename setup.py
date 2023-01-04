@@ -14,7 +14,7 @@ setup(
 
     # Updated via travisd: https://travis-ci.org/guettli/subx
     # See .travis.yml
-    version='2020.44.0',
+    version='2023.1.0',
 
     description='subx: Datastructure SubprocessResult',
     long_description=long_description,
