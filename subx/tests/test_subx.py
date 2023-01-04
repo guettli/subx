@@ -2,8 +2,8 @@
 
 import subprocess
 import unittest
+from unittest import mock
 
-import mock
 import subx
 
 
@@ -19,7 +19,8 @@ class Test(unittest.TestCase):
 
     def test_subprocess_result_call__read_stdout(self):
         result = subx.SubprocessResult.call(['cat', '/etc/fstab'])
-        self.assertEqual(open('/etc/fstab', 'rb').read(), result.stdout)
+        with open('/etc/fstab', 'rb') as fd:
+            self.assertEqual(fd.read(), result.stdout)
         self.assertEqual(0, result.ret)
         self.assertEqual(b'', result.stderr)
         self.assertEqual(['cat', '/etc/fstab'], result.cmd)
@@ -33,13 +34,15 @@ class Test(unittest.TestCase):
     def test_subprocess_result_call__read_sterr_and_stdout(self):
         result = subx.SubprocessResult.call(['cat', '/etc/fstab', '/file/which/does/not/exist'],
                                             env=dict(LANG='C'))
-        self.assertEqual(open('/etc/fstab', 'rb').read(), result.stdout)
+        with open('/etc/fstab', 'rb') as fd:
+            self.assertEqual(fd.read(), result.stdout)
         self.assertEqual(1, result.ret)
         self.assertEqual(b'cat: /file/which/does/not/exist: No such file or directory\n', result.stderr)
 
     def test_assert_zero_exit_status__ok(self):
         result = subx.call(['cat', '/etc/fstab'], assert_zero_exit_status=True)
-        self.assertEqual(open('/etc/fstab', 'rb').read(), result.stdout)
+        with open('/etc/fstab', 'rb') as fd:
+            self.assertEqual(fd.read(), result.stdout)
         self.assertEqual(0, result.ret)
         self.assertEqual(b'', result.stderr)
         self.assertEqual(['cat', '/etc/fstab'], result.cmd)
@@ -59,7 +62,8 @@ class Test(unittest.TestCase):
 
     def test_warn_on_non_zero_exist_status__ok(self):
         result = subx.call(['cat', '/etc/fstab'], warn_on_non_zero_exist_status=True)
-        self.assertEqual(open('/etc/fstab', 'rb').read(), result.stdout)
+        with open('/etc/fstab', 'rb') as fd:
+            self.assertEqual(fd.read(), result.stdout)
         self.assertEqual(0, result.ret)
         self.assertEqual(b'', result.stderr)
         self.assertEqual(['cat', '/etc/fstab'], result.cmd)
