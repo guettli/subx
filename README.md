@@ -10,6 +10,22 @@ This is handy if you do "one shot" calling of subprocesses.
 Since Python 3.5 the subprocess module has the method [run()](https://docs.python.org/3.5/library/subprocess.html#subprocess.run)
 which returns the datastructure [CompletedProcess](https://docs.python.org/3.5/library/subprocess.html#subprocess.CompletedProcess). 
 
+old:
+
+```python
+    result = subx.call(args)
+    logger.info(result.stdout)
+    logger.info(result.stderr)
+```
+
+New:
+
+```python
+    result = subprocess.run(args, capture_output=True)
+    logger.info(result.stdout)
+    logger.info(result.stderr)
+```
+
 **This means the `subx` library is not needed any more.**
 
 ## Why?
