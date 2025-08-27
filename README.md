@@ -1,5 +1,3 @@
-[![image](https://travis-ci.org/guettli/subx.svg?branch=master)](https://travis-ci.org/guettli/subx)
-
 # subx: A Data Structure for Results of Subprocesses
 
 ## SubprocessResult
@@ -10,8 +8,9 @@ This library gives you a data structure called
 This is handy if you do "one shot" calling of subprocesses.
 
 Since Python 3.5 the subprocess module has the method [run()](https://docs.python.org/3.5/library/subprocess.html#subprocess.run)
-which returns the datastructure [CompletedProcess](https://docs.python.org/3.5/library/subprocess.html#subprocess.CompletedProcess). This means
-the `subx` library is not needed any more.
+which returns the datastructure [CompletedProcess](https://docs.python.org/3.5/library/subprocess.html#subprocess.CompletedProcess). 
+
+**This means the `subx` library is not needed any more.**
 
 ## Why?
 
