@@ -21,7 +21,7 @@ old:
 New:
 
 ```python
-    result = subprocess.run(args, capture_output=True)
+    result = subprocess.run(args, capture_output=True, check=True)
     logger.info(result.stdout)
     logger.info(result.stderr)
 ```
